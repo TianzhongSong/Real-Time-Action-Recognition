@@ -1,6 +1,6 @@
 # 实时多人行为识别系统
 
-编程语言：python
+编程语言：python3
 
 主要用到的工具包或库：opencv, keras, tensorflow, pyqt等。
 
