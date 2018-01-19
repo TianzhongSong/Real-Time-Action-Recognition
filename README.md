@@ -1,5 +1,10 @@
 # 实时多人行为识别系统
 
+编程语言：python
+
+主要用到的工具包或库：opencv, keras, tensorflow, pyqt等。
+
+
 ## 数据集
 
 数据集采用的是谷歌最新的AVA行为识别数据集。
