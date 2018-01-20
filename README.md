@@ -9,7 +9,8 @@
 
 数据集采用的是谷歌最新的AVA行为识别数据集。
 
-数据集介绍：[机器之心](https://www.jiqizhixin.com/articles/2017-10-20-5)，[Google](https://research.google.com/ava/download.html)
+数据集介绍：[机器之心](https://www.jiqizhixin.com/articles/2017-10-20-5)，[Google](https://research.google.com/ava/download.html), 
+[Paper](https://arxiv.org/pdf/1705.08421.pdf)
 
 国内下载：由于国内墙的原因，该数据集很难下载下来，不过好在SmartPorridge提供了百度网盘地址，
 在此真诚的感谢[SmartPorridge](https://github.com/SmartPorridge)，
