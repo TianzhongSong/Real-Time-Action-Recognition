@@ -7,14 +7,9 @@
 
 ## 数据集
 
-数据集采用的是谷歌最新的AVA行为识别数据集。
+本来数据集拟采用的是谷歌最新的AVA行为识别数据集。后来仔细看了AVA数据集的情况，发现该数据集不适合。
 
-数据集介绍：[机器之心](https://www.jiqizhixin.com/articles/2017-10-20-5)，[Google](https://research.google.com/ava/download.html), 
-[Paper](https://arxiv.org/pdf/1705.08421.pdf)
-
-国内下载：由于国内墙的原因，该数据集很难下载下来，不过好在SmartPorridge提供了百度网盘地址，
-在此真诚的感谢[SmartPorridge](https://github.com/SmartPorridge)，
-[AVA下载](https://github.com/SmartPorridge/google-AVA-Dataset-downloader)。
+因此我们采取自建数据集。自建数据集使用的程序是[dataset maker](https://github.com/TianzhongSong/Dataset-maker-for-action-recognition)。
 
 ## 系统框架
 待更新
