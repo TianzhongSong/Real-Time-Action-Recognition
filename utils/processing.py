@@ -32,6 +32,7 @@ def preprocessing(clip):
     :param clip: the input video clip
     :return: video clip
     """
+    clip = clip.astype(np.float32)
     clip /= 255.
     clip -= 0.5
     clip *= 2.0
