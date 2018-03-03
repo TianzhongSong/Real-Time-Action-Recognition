@@ -36,4 +36,5 @@ def preprocessing(clip):
     clip /= 255.
     clip -= 0.5
     clip *= 2.0
+    clip = np.transpose(clip, (0, 2, 3, 1, 4))
     return clip
