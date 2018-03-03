@@ -22,7 +22,7 @@
 ### UI界面构建
 拟采用PyQt编写界面
 
-初步预期界面效果
+初步预期界面布局
 
 ![](https://github.com/TianzhongSong/Real-time-action-recognition-system/blob/master/files/%E7%95%8C%E9%9D%A2v1.png)
 
