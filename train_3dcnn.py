@@ -17,7 +17,7 @@ def generator_data_batch(list_label_txt, batch_size, nb_classes, clip_length):
     random.shuffle(sample_list)
     file.close()
     while True:
-        for i in range(int(nb_samples / batch_size)):
+        for i in range(nb_samples // batch_size):
             batch_start = i * batch_size
             batch_end = (i + 1) * batch_size
             clip_batch, labels = process_batch(sample_list[batch_start:batch_end], clip_length)
