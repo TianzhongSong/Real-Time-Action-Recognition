@@ -1,10 +1,14 @@
+"""
+some processing functions
+"""
 import os
 import numpy as np
+import cv2
 
 
 def generator_label_txt(image_path, hold_out_rate=0.8):
     """
-    generator label.txt for training and test
+    generators label.txt for training and test
     :param image_path: the directory of images
     :param hold_out_rate: the rate of training samples
     :return: None
@@ -24,6 +28,32 @@ def generator_label_txt(image_path, hold_out_rate=0.8):
             test_txt.write(image_path + action + '/' + sample + ' ' + label)
     train_txt.close()
     test_txt.close()
+
+
+def process_batch(file_list, clip_length):
+    """
+    process every batch
+    :param file_list: the sample list of current batch
+    :param clip_length: the length of video clip for 3DCNN model
+    :return: batch clip and labels
+    """
+    batch_size = len(file_list)
+    batch_clip = np.zeros((batch_size, 16, 112, 112, 3), dtype='float32')
+    labels = np.zeros(batch_size, dtype='int')
+    for i in range(batch_size):
+        path = file_list[i].split(' ')[0]
+        label = file_list[i].split(' ')[-1]
+        label = label.strip('\n')
+        label = int(label)
+        imgs = os.listdir(path)
+        imgs.sort(key=str.lower)
+        for j in range(clip_length):
+            frame = cv2.imread(path + '/' + imgs[j])
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            frame = cv2.resize(frame, (171, 128))
+            batch_clip[i][j][:][:][:] = frame[8:120, 30:142, :]
+        labels[i] = label
+    return batch_clip, labels
 
 
 def preprocessing(clip):
