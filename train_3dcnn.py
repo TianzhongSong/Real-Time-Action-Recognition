@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from utils.processing import preprocessing, process_batch
+from utils.processing import *
 from utils.schedules import onetenth_4_8_12
 from utils.history_saver import *
 from models.model_c3d import c3d_model
@@ -10,7 +10,7 @@ import random
 import os
 
 
-def generator_data_batch(list_label_txt, batch_size, nb_classes, clip_length):
+def generate_data_batch(list_label_txt, batch_size, nb_classes, clip_length):
     file = open(list_label_txt, 'r')
     sample_list = file.readlines()
     nb_samples = len(sample_list)
@@ -27,6 +27,8 @@ def generator_data_batch(list_label_txt, batch_size, nb_classes, clip_length):
 
 
 def main():
+    image_path = '/home/dl1/datasets/action/'
+    generator_label_txt(image_path, hold_out_rate=0.8)
     train_list_txt = 'txt/train_list.txt'
     test_list_txt = 'txt/test_list.txt'
     train_file = open(train_list_txt, 'r')
@@ -53,11 +55,11 @@ def main():
 
     model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     model.summary()
-    history = model.fit_generator(generator_data_batch(train_list_txt, batch_size, nb_classes, clip_length),
+    history = model.fit_generator(generate_data_batch(train_list_txt, batch_size, nb_classes, clip_length),
                                   steps_per_epoch=train_samples // batch_size,
                                   epochs=epochs,
                                   callbacks=[onetenth_4_8_12(init_lr)],
-                                  validation_data=generator_data_batch(test_list_txt,
+                                  validation_data=generate_data_batch(test_list_txt,
                                                                        batch_size, nb_classes, clip_length),
                                   validation_steps=test_samples // batch_size,
                                   verbose=1)
