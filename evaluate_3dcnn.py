@@ -101,10 +101,10 @@ def run_camera(input_shape, ssd_model, action_class, clip_length, c3d):
                             clip = np.expand_dims(clip, axis=0)
                             clip = preprocessing(clip)
                             c3d_result = c3d.predict(clip)
-                            if max(c3d_result) >= conf_thresh:
-                                label = np.argmax(c3d_result)
+                            if max(c3d_result[0]) >= conf_thresh:
+                                label = np.argmax(c3d_result[0])
                                 action_name = action_class[label]
-                                cv2.putText(orig_image, action_name + '%.2f' % max(c3d_result), (xmin + 10, ymin + 10),
+                                cv2.putText(orig_image, action_name + '%.2f' % max(c3d_result[0]), (xmin + 10, ymin + 10),
                                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 1)
         cv2.imshow("SSD result", orig_image)
         if cv2.waitKey(5) & 0xFF == ord('q'):
