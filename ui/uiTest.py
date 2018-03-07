@@ -1,9 +1,17 @@
 # -*- coding: UTF-8 -*-
+"""
+界面V1.0
+"""
 import sys
 import cv2
 from PyQt5 import QtCore, QtGui, QtWidgets
 import os
-from processTest import processing
+
+
+def processing(image, mode):
+    image = cv2.putText(image, 'running in mode {}'.format(mode), (20, 20),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+    return image
 
 
 class Ui_MainWindow(QtWidgets.QWidget):
@@ -42,13 +50,16 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
         self.button_close.move(10, 100)
 
+        self.infoBox = QtWidgets.QTextBrowser(self)
+        self.infoBox.setGeometry(QtCore.QRect(10, 300, 200, 200))
+
         # 信息显示
         self.label_show_camera = QtWidgets.QLabel()
         self.label_move = QtWidgets.QLabel()
         self.label_move.setFixedSize(200, 200)
 
         self.label_show_camera.setFixedSize(641, 481)
-        self.label_show_camera.setAutoFillBackground(False)
+        self.label_show_camera.setAutoFillBackground(True)
 
         self.__layout_fun_button.addWidget(self.button_open_camera)
         self.__layout_fun_button.addWidget(self.button_mode_1)
@@ -65,67 +76,70 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.setWindowTitle(u'界面V1.0')
 
     def slot_init(self):
-        self.button_open_camera.clicked.connect(self.button_open_camera_click)
+        self.button_open_camera.clicked.connect(self.button_event)
         self.timer_camera.timeout.connect(self.show_camera)
 
-        self.button_mode_1.clicked.connect(self.mode1_click)
-        self.button_mode_2.clicked.connect(self.mode2_click)
-        self.button_mode_3.clicked.connect(self.mode3_click)
+        self.button_mode_1.clicked.connect(self.button_event)
+        self.button_mode_2.clicked.connect(self.button_event)
+        self.button_mode_3.clicked.connect(self.button_event)
         self.button_close.clicked.connect(self.close)
 
-    def button_open_camera_click(self):
-        self.__flag_mode = 0
-        self.button_mode_1.setText(u'模式1_OFF')
-        self.button_mode_2.setText(u'模式2_OFF')
-        self.button_mode_3.setText(u'模式3_OFF')
-        if self.timer_camera.isActive() == False:
-            flag = self.cap.open(self.CAM_NUM)
-            if flag == False:
-                msg = QtWidgets.QMessageBox.warning(self, u"Warning", u"请检测相机与电脑是否连接正确",
-                                                    buttons=QtWidgets.QMessageBox.Ok,
-                                                    defaultButton=QtWidgets.QMessageBox.Ok)
-            else:
-                self.timer_camera.start(10)
-                self.button_open_camera.setText(u'相机_ON')
-        else:
-            self.timer_camera.stop()
-            self.cap.release()
-            self.label_show_camera.clear()
-            self.button_open_camera.setText(u'相机_OFF')
-
-
-    def mode1_click(self):
-        if self.timer_camera.isActive() == True:
+    def button_event(self):
+        sender = self.sender()
+        if sender == self.button_mode_1 and self.timer_camera.isActive():
             if self.__flag_mode != 1:
                 self.__flag_mode = 1
                 self.button_mode_1.setText(u'模式1_ON')
                 self.button_mode_2.setText(u'模式2_OFF')
                 self.button_mode_3.setText(u'模式3_OFF')
+                self.infoBox.setText(u'当前为模式1')
             else:
                 self.__flag_mode = 0
                 self.button_mode_1.setText(u'模式1_OFF')
-
-    def mode2_click(self):
-        if self.timer_camera.isActive() == True:
+                self.infoBox.setText(u'相机已打开')
+        elif sender == self.button_mode_2 and self.timer_camera.isActive():
             if self.__flag_mode != 2:
                 self.__flag_mode = 2
                 self.button_mode_1.setText(u'模式1_OFF')
                 self.button_mode_2.setText(u'模式2_ON')
                 self.button_mode_3.setText(u'模式3_OFF')
+                self.infoBox.setText(u'当前为模式2')
             else:
                 self.__flag_mode = 0
                 self.button_mode_2.setText(u'模式2_OFF')
-
-    def mode3_click(self):
-        if self.timer_camera.isActive() == True:
+                self.infoBox.setText(u'相机已打开')
+        elif sender == self.button_mode_3 and self.timer_camera.isActive():
             if self.__flag_mode != 3:
                 self.__flag_mode = 3
                 self.button_mode_1.setText(u'模式1_OFF')
                 self.button_mode_2.setText(u'模式2_OFF')
                 self.button_mode_3.setText(u'模式3_ON')
+                self.infoBox.setText(u'当前为模式3')
             else:
                 self.__flag_mode = 0
                 self.button_mode_3.setText(u'模式3_OFF')
+                self.infoBox.setText(u'相机已打开')
+        else:
+            self.__flag_mode = 0
+            self.button_mode_1.setText(u'模式1_OFF')
+            self.button_mode_2.setText(u'模式2_OFF')
+            self.button_mode_3.setText(u'模式3_OFF')
+            if self.timer_camera.isActive() == False:
+                flag = self.cap.open(self.CAM_NUM)
+                if flag == False:
+                    msg = QtWidgets.QMessageBox.warning(self, u"Warning", u"请检测相机与电脑是否连接正确",
+                                                        buttons=QtWidgets.QMessageBox.Ok,
+                                                        defaultButton=QtWidgets.QMessageBox.Ok)
+                else:
+                    self.timer_camera.start(10)
+                    self.button_open_camera.setText(u'相机_ON')
+                    self.infoBox.setText(u'相机已打开')
+            else:
+                self.timer_camera.stop()
+                self.cap.release()
+                self.label_show_camera.clear()
+                self.button_open_camera.setText(u'相机_OFF')
+                self.infoBox.setText(u'相机已关闭')
 
     def show_camera(self):
         flag, self.image = self.cap.read()
