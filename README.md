@@ -18,16 +18,8 @@
 
 ## 后续工作
 
-### 特征提取
-拟采用3DCNN与HOG3D的组合方式提取视频行为特征
-
 ### UI界面构建
-拟采用PyQt编写界面
 
-初步预期界面布局 [uiTest.py](https://github.com/TianzhongSong/Real-time-action-recognition-system/blob/master/ui/uiTest.py)
+初步界面布局 [uiTest.py](https://github.com/TianzhongSong/Real-time-action-recognition-system/blob/master/ui/uiTest.py)
 
 ![](https://github.com/TianzhongSong/Real-time-action-recognition-system/blob/master/files/jiemian.png)
-
-
-### 其他可能涉及到的内容
-目标检测（以人为主）：用目标检测框架如SSD、YOLO等。
