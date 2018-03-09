@@ -8,7 +8,7 @@ from models.model_c3d import *
 from models.model_2d import *
 from models.ssd import SSD300 as SSD
 from utils.ssd_detector import process_image
-from utils.ssd_detector_v2 import detect_image
+from utils.detector_mode1 import detect_image
 from utils.processing import preprocessing
 
 clip_length = 16
