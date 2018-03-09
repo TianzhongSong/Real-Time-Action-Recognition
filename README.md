@@ -23,3 +23,6 @@
 初步界面布局 [uiTest.py](https://github.com/TianzhongSong/Real-time-action-recognition-system/blob/master/ui/uiTest.py)
 
 ![](https://github.com/TianzhongSong/Real-time-action-recognition-system/blob/master/files/jiemian.png)
+
+
+![](https://github.com/TianzhongSong/Action-Recognition-Research/blob/master/files/pose.gif)
