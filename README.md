@@ -13,10 +13,6 @@
 
 因此我们采取自建数据集。自建数据集使用的程序是[dataset maker](https://github.com/TianzhongSong/Dataset-maker-for-action-recognition)。
 
-## 系统框架
-待更新
-
-## 后续工作
 
 ### UI界面构建
 
