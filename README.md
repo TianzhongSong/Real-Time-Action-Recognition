@@ -1,7 +1,5 @@
 # 实时行为识别系统
 
-都是bullshit，根本做不出来
-
 编程语言：python3
 
 主要用到的工具包或库：opencv, keras, tensorflow, pyqt等。
