@@ -7,7 +7,8 @@ def data_aug(input_img, resize_time=4):
         print('Bad image!')
         return None
     if resize_time > input_img.shape[0] // 2:
-        raise ValueError("resize_time must be smaller than half of the size of input_img")
+        raise ValueError(
+            "resize_time ({0}) must be smaller than half of the size of input_img ({1})".format(resize_time, input_img.shape[0] // 2))
 
     processed = list()
     # 水平翻转
