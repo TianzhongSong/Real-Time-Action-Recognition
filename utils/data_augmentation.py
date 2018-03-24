@@ -19,8 +19,8 @@ def data_aug(input_img, resize_time=4):
     resize_step = input_img.shape[0] // 2 // resize_time
     min_size = input_img.shape[0] // 2
     for i in range(resize_time):
-        pad = (input_img.shape[0] - min_size) // 2
         resize_size = min_size + i * resize_step
+        pad = (input_img.shape[0] - resize_size) // 2
         mask[pad:pad + resize_size, pad:pad + resize_size, :] = cv2.resize(input_img, (resize_size, resize_size))
         processed.append(mask)
 
