@@ -2,30 +2,32 @@
 import sys
 import cv2
 import numpy as np
+import time
 from PyQt5 import QtCore, QtGui, QtWidgets
-import os
 from models.model_c3d import *
 from models.model_2d import *
 from models.ssd import SSD300 as SSD
-from utils.ssd_detector import process_image
-from utils.detector_mode1 import detect_image
+from utils.clip_detector import process_image
+from utils.pose_detector import detect_image
+from utils.ssd_utils import BBoxUtility
 from utils.processing import preprocessing
+from config import *
+import tensorflow as tf
 
-clip_length = 16
-ssd_input_shape = (300, 300, 3)
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+sess = tf.Session(config=config)
+bbox_util = BBoxUtility(21)
 ssd_model = SSD(ssd_input_shape, num_classes=21)
 ssd_model.load_weights('weights_SSD300.hdf5')
-c3d_input_shape = (112, 112, clip_length, 3)
-c3d = c3d_model(c3d_input_shape, nb_classes=3)
+c3d = c3d_model(c3d_input_shape, nb_classes=len(action_classes))
 c3d.load_weights('results/weights_c3d_mask.h5')
-action_class = ['standing', 'walking', 'sitting']
-action_names = ['stand', 'sit']
-cnn_2d_input_shape = (64, 64, 3)
-cnn = cnn_2d(cnn_2d_input_shape, nb_classes=2)
-cnn.load_weights('results/cnn_2d_mask.h5')
+cnn = cnn_2d(cnn_2d_input_shape, nb_classes=len(pose_classes))
+cnn.load_weights('results/cnn_2d_{0}.h5'.format(mode))
 
 
 class Ui_MainWindow(QtWidgets.QWidget):
+
     def __init__(self, parent=None):
         super(Ui_MainWindow, self).__init__(parent)
 
@@ -39,8 +41,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.__bbox = []
         self.__empty_count = 0
         self.__val_data = []
-        self.__action_name = 'unknow'
-        self.x = 0
 
     def set_ui(self):
 
@@ -66,14 +66,14 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.button_close.move(10, 100)
 
         self.infoBox = QtWidgets.QTextBrowser(self)
-        self.infoBox.setGeometry(QtCore.QRect(10, 500, 200, 260))
+        self.infoBox.setGeometry(QtCore.QRect(10, 300, 200, 200))
 
         # 信息显示
         self.label_show_camera = QtWidgets.QLabel()
         self.label_move = QtWidgets.QLabel()
         self.label_move.setFixedSize(200, 200)
 
-        self.label_show_camera.setFixedSize(1281, 761)
+        self.label_show_camera.setFixedSize(winWidth + 1, winHeight + 1)
         self.label_show_camera.setAutoFillBackground(True)
 
         self.__layout_fun_button.addWidget(self.button_open_camera)
@@ -138,14 +138,14 @@ class Ui_MainWindow(QtWidgets.QWidget):
             self.button_mode_3.setText(u'模式3_OFF')
             if self.timer_camera.isActive() == False:
                 flag = self.cap.open(self.CAM_NUM)
-                self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-                self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 760)
+                self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, winWidth)
+                self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, winHeight)
                 if flag == False:
                     msg = QtWidgets.QMessageBox.warning(self, u"Warning", u"请检测相机与电脑是否连接正确",
                                                         buttons=QtWidgets.QMessageBox.Ok,
                                                         defaultButton=QtWidgets.QMessageBox.Ok)
                 else:
-                    self.timer_camera.start(10)
+                    self.timer_camera.start(30)
                     self.button_open_camera.setText(u'相机_ON')
                     self.infoBox.setText(u'相机已打开')
             else:
@@ -164,34 +164,45 @@ class Ui_MainWindow(QtWidgets.QWidget):
 
     def show_camera(self):
         flag, self.image = self.cap.read()
-        show = cv2.resize(self.image, (1280, 760))
+        show = cv2.resize(self.image, (winWidth, winHeight))
         show = cv2.cvtColor(show, cv2.COLOR_BGR2RGB)
-        if self.__flag_mode == 2:
-            self.__action_name = 'unkonw'
-            show, test_data, self.__bbox, self.__empty_count, detected = process_image(show, ssd_model, self.__empty_count)
+        start = time.time()
+        if self.__flag_mode == 1:
+            self.__action_names = []
+            show, self.__action_names = detect_image(show, ssd_model, cnn, bbox_util)
+            sits = self.__action_names.count('sit')
+            stands = self.__action_names.count('stand')
+            bends = self.__action_names.count('bend')
+            squats = self.__action_names.count('squat')
+            self.infoBox.setText(
+                u'当前为人体姿态识别模式 \n当前视野中共有{0}人 \n站立的有{1}人 \n坐着的有{2}人 \n弯腰的有{3}人 \n蹲着的有{4}人'.format(
+                    len(self.__action_names), stands, sits, bends, squats))
+        elif self.__flag_mode == 2:
+            self.__action_names = 'unkonw'
+            show, test_data, self.__bbox, self.__empty_count, detected = process_image(show, ssd_model,
+                                                                                       self.__empty_count, bbox_util)
             if detected and len(self.__val_data) < clip_length:
                 self.__val_data.append(test_data)
             elif detected and len(self.__val_data) == clip_length:
                 self.__val_data.pop(0)
                 self.__val_data.append(test_data)
                 predict_result = self.action_predict(c3d)
-                self.__action_name = action_class[np.argmax(predict_result[0])]
-                show = cv2.putText(show, self.__action_name + ' %.2f' % max(predict_result[0]),
-                                (self.__bbox[0] + 20, self.__bbox[1] + 20),
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+                self.__action_names = action_classes[np.argmax(predict_result[0])]
+                show = cv2.putText(show, self.__action_names + ' %.2f' % max(predict_result[0]),
+                                   (self.__bbox[0] + 20, self.__bbox[1] + 20),
+                                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
             if self.__empty_count >= 4:
                 self.__empty_count = 0
                 self.__val_data = []
 
-            self.infoBox.setText(u'当前为单人行为识别模式 \n当前动作：{0}'.format(self.__action_name))
-        if self.__flag_mode == 1:
-            self.__action_name = 'unkown'
-            show, self.__action_name = detect_image(show, ssd_model, cnn)
-            sits = self.__action_name.count('sit')
-            stands = self.__action_name.count('stand')
-            self.infoBox.setText(u'当前为人体姿态识别模式 \n当前视野中共有{0}人 \n站立的有{1}人 \n坐着的有{2}人'.format(
-                len(self.__action_name), stands, sits))
+            self.infoBox.setText(u'当前为单人行为识别模式 \n当前动作：{0}'.format(self.__action_names))
+        elif self.__flag_mode == 3:
+            show = process_image(show, ssd_model, self.__empty_count, bbox_util)
+
+        end = time.time()
+        fps = 1. / (end - start)
+        cv2.putText(show, 'FPS: %.2f' % fps, (30, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
         showImage = QtGui.QImage(show.data, show.shape[1], show.shape[0], QtGui.QImage.Format_RGB888)
         self.label_show_camera.setPixmap(QtGui.QPixmap.fromImage(showImage))
 
