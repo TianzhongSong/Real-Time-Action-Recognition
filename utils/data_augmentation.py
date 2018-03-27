@@ -1,27 +1,60 @@
 import cv2
 import numpy as np
+from config import *
 
 
-def data_aug(input_img, resize_time=4):
+def data_aug(input_img, resize_times):
     if input_img is None:
-        print('Bad image!')
+        print("Bad image!")
         return None
-    if resize_time > input_img.shape[0] // 2:
-        raise ValueError(
-            "resize_time ({0}) must be smaller than half of the size of input_img ({1})".format(resize_time, input_img.shape[0] // 2))
+
+    imgHeight = input_img.shape[0]
 
     processed = list()
-    # 水平翻转
+
     processed.append(cv2.flip(input_img, 1))
 
-    # 图像缩放
-    mask = np.zeros((input_img.shape[0], input_img.shape[1], 3), dtype='uint8')
-    resize_step = input_img.shape[0] // 2 // resize_time
-    min_size = input_img.shape[0] // 2
-    for i in range(resize_time):
+    mask = np.zeros_like(input_img, dtype='float32')
+
+    resize_step = imgHeight // 2 // resize_times
+    min_size = imgHeight // 2
+    for i in range(resize_times):
         resize_size = min_size + i * resize_step
-        pad = (input_img.shape[0] - resize_size) // 2
-        mask[pad:pad + resize_size, pad:pad + resize_size, :] = cv2.resize(input_img, (resize_size, resize_size))
+        pad = (imgHeight - resize_size) // 2
+        mask[pad: pad + resize_size, pad:pad + resize_size, :] = cv2.resize(input_img, (resize_size, resize_size))
         processed.append(mask)
 
     return processed
+
+
+def data_aug2(input_img, shift_times=5):
+    if input_img is None:
+        print("Bad image!")
+        return None
+    elif cnn2d_ImH != cnn2d_ImW:
+        raise ValueError('The height and width of input shape of 2dcnn must be equal.')
+    elif input_img.shape[0] <= cnn2d_ImH + shift_times - 1:
+        raise ValueError('The height of input image must be larger than {0}'.format(cnn2d_ImH + shift_times - 1))
+    elif input_img.shape[1] != cnn2d_ImW:
+        raise ValueError('The width of image must equal to {0}'.format(cnn2d_ImW))
+    else:
+        nb_data = 0
+        HWdiff = input_img.shape[0] - input_img.shape[1]
+        shiftStep = HWdiff // (shift_times - 1)
+        resized = cv2.resize(input_img, (cnn2d_ImW, cnn2d_ImH))
+        processed = list()
+
+        processed.append(resized)
+        nb_data += 1
+        processed.append(cv2.flip(resized, 1))
+        nb_data += 1
+
+        for i in range(shift_times):
+            pad = shiftStep * i
+            temp = input_img[pad:pad + cnn2d_ImW, :, :]
+            processed.append(temp)
+            nb_data += 1
+            processed.append(cv2.flip(temp, 1))
+            nb_data += 1
+
+        return processed, nb_data
