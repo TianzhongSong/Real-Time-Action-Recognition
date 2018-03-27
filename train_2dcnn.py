@@ -41,7 +41,7 @@ def aug(img_data, train_label):
         train_data += data_aug(img_data[i])
         labels = [train_label[i]]*5
         train_label += labels
-    return np.array(train_data), np.array(train_label)
+    return train_data, train_label
 
 
 if __name__ == '__main__':
