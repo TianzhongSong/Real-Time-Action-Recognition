@@ -17,3 +17,13 @@
 初步界面布局 [uiTest.py](https://github.com/TianzhongSong/Real-time-action-recognition-system/blob/master/ui/uiTest.py)
 
 ![](https://github.com/TianzhongSong/Action-Recognition-Research/blob/master/files/pose.gif)
+
+### Todo
+
+1.尝试将人体分割加入
+
+2.尝试其他模型，不局限于普通CNN、3DCNN
+
+3.采集更多数据，在允许条件下公开数据
+
+4.进一步优化
