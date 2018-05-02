@@ -1,8 +1,8 @@
 # 实时行为识别系统
 
-编程语言：python3
+编程语言：Python3
 
-主要用到的工具包或库：opencv, keras, tensorflow, pyqt等。
+主要用到的工具包或库：OpenCV, Keras, TensorFlow, PyQt等。
 
 
 ## 数据集
