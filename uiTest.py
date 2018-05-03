@@ -102,7 +102,7 @@ class Detector(object):
     def detect_mode2(self, input_image):
         """
         :param input_image: input image
-        :return: locations and scores
+        :return: origin image, mask image and locations
         """
         input_img = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
         tmp = deepcopy(input_img)
