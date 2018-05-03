@@ -68,9 +68,9 @@ class Detector(object):
         :param input_image: input image
         :return: detected targets
         """
-        input_img = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
-        tmp = deepcopy(input_img)
-        input_img = cv2.resize(input_img, (self.input_shape[1], self.input_shape[0]))
+        # input_img = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
+        tmp = deepcopy(input_image)
+        input_img = cv2.resize(input_image, (self.input_shape[1], self.input_shape[0]))
         input_img = np.expand_dims(input_img, 0)
         y_pred = self.model.predict(input_img)
         y_pred_thresh = [y_pred[k][y_pred[k, :, 1] > self.conf_threshold] for k in range(y_pred.shape[0])]
@@ -104,9 +104,9 @@ class Detector(object):
         :param input_image: input image
         :return: origin image, mask image and locations
         """
-        input_img = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
-        tmp = deepcopy(input_img)
-        input_img = cv2.resize(input_img, (self.input_shape[1], self.input_shape[0]))
+        # input_img = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
+        tmp = deepcopy(input_image)
+        input_img = cv2.resize(input_image, (self.input_shape[1], self.input_shape[0]))
         input_img = np.expand_dims(input_img, 0)
         y_pred = self.model.predict(input_img)
         y_pred_thresh = [y_pred[k][y_pred[k, :, 1] > self.conf_threshold] for k in range(y_pred.shape[0])]
@@ -137,9 +137,9 @@ class Detector(object):
         :param input_image: input image
         :return: locations and scores
         """
-        input_img = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
+        #input_img = cv2.cvtColor(input_image, cv2.COLOR_BGR2RGB)
         # tmp = deepcopy(input_img)
-        input_img = cv2.resize(input_img, (self.input_shape[1], self.input_shape[0]))
+        input_img = cv2.resize(input_image, (self.input_shape[1], self.input_shape[0]))
         input_img = np.expand_dims(input_img, 0)
         y_pred = self.model.predict(input_img)
         y_pred_thresh = [y_pred[k][y_pred[k, :, 1] > self.conf_threshold] for k in range(y_pred.shape[0])]
@@ -292,8 +292,8 @@ class Ui_MainWindow(QtWidgets.QWidget):
         return settings.action_classes[np.argmax(c3d_result[0])]
 
     def show_camera(self):
-        flag, self.image = self.cap.read()
-        show = cv2.resize(self.image, (settings.winWidth, settings.winHeight))
+        flag, frame = self.cap.read()
+        show = cv2.resize(frame, (settings.winWidth, settings.winHeight))
         show = cv2.cvtColor(show, cv2.COLOR_BGR2RGB)
         start = time.time()
         # 模式一 姿态识别
