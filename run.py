@@ -10,9 +10,6 @@ import cv2
 import numpy as np
 import time
 import settings
-from keras import backend as K
-
-K.clear_session()
 
 poseEstimator = None
 
@@ -280,7 +277,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
                 self.cap.release()
             if self.timer_camera.isActive():
                 self.timer_camera.stop()
-            K.clear_session()
             event.accept()
             print("System exited.")
 
