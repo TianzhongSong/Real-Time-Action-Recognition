@@ -40,7 +40,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
         self.joints = []
         self.current = []
         self.previous = []
-        self.count = 0
 
     def set_ui(self):
 
@@ -191,8 +190,6 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                       (int(settings.c[label % 32, 0]),
                                        int(settings.c[label % 32, 1]),
                                        int(settings.c[label % 32, 2])), 4)
-                    # cv2.imwrite('./rec2/{}.jpg'.format(self.count+10000), cv2.cvtColor(show, cv2.COLOR_RGB2BGR))
-                    self.count += 1
 
             elif self.__flag_mode == 3:
                 self.infoBox.setText(u'当前为人体行为识别模式')
@@ -259,13 +256,10 @@ class Ui_MainWindow(QtWidgets.QWidget):
                                       (int(settings.c[label % 32, 0]),
                                        int(settings.c[label % 32, 1]),
                                        int(settings.c[label % 32, 2])), 4)
-                        cv2.imwrite('./rec/ori{}.jpg'.format(self.count + 10000), cv2.cvtColor(ori, cv2.COLOR_RGB2BGR))
-                        cv2.imwrite('./rec/sk{}.jpg'.format(self.count + 10000), cv2.cvtColor(sk, cv2.COLOR_RGB2BGR))
-                        cv2.imwrite('./rec/act{}.jpg'.format(self.count + 10000), cv2.cvtColor(show, cv2.COLOR_RGB2BGR))
-                        self.count += 1
+
             end = time.time()
             self.fps = 1. / (end - start)
-            # cv2.putText(show, 'FPS: %.2f' % self.fps, (30, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+            cv2.putText(show, 'FPS: %.2f' % self.fps, (30, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
             showImage = QtGui.QImage(show.data, show.shape[1], show.shape[0], QtGui.QImage.Format_RGB888)
             self.label_show_camera.setPixmap(QtGui.QPixmap.fromImage(showImage))
 
