@@ -29,9 +29,9 @@
 
 ### UI界面构建
 
-初步界面布局 [uiTest.py](https://github.com/TianzhongSong/Real-time-action-recognition-system/blob/master/ui/uiTest.py)
+初步界面布局 [uiTest.py](https://github.com/TianzhongSong/Real-Time-Action-Recognition/blob/old/ui/uiTest.py)
 
-![](https://github.com/TianzhongSong/Action-Recognition-Research/blob/master/files/pose.gif)
+![](https://github.com/TianzhongSong/Real-Time-Action-Recognition/blob/old/files/pose.gif)
 
 ### Todo
 
