@@ -2,7 +2,13 @@
 
 Real-time pose estimation and action recognition
 
-Old version is in [old branch](https://github.com/TianzhongSong/Real-Time-Action-Recognition/tree/old)
+Openpose weight file is collected from [tf-pose-estimation](https://github.com/ildoonet/tf-pose-estimation), thank for [ildoonet](https://github.com/ildoonet)'s awesome work.
+
+## Old version
+
+Old version detects person using SSD then classify images.
+
+The old version is in [old branch](https://github.com/TianzhongSong/Real-Time-Action-Recognition/tree/old)
 
 ## requirements
 
