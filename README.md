@@ -36,11 +36,15 @@ pyqt5
 
 ### pose estimation
 
+[tf-pose-estimation](https://github.com/ildoonet/tf-pose-estimation)
+
 ![pose1](https://github.com/TianzhongSong/Real-Time-Action-Recognition/blob/master/files/pose1.gif)
 
 ![pose2](https://github.com/TianzhongSong/Real-Time-Action-Recognition/blob/master/files/pose2.gif)
 
 ### multi-person tracking
+
+Using [sort](https://github.com/abewley/sort) to track person.
 
 ![track1](https://github.com/TianzhongSong/Real-Time-Action-Recognition/blob/master/files/track1.gif)
 
