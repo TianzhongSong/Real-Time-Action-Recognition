@@ -165,7 +165,7 @@ class Ui_MainWindow(QtWidgets.QWidget):
             elif self.__flag_mode == 2:
                 self.infoBox.setText(u'当前为多人跟踪模式')
                 humans = poseEstimator.inference(show)
-                show, joints, bboxes, xcenter = TfPoseEstimator.get_skeleton(show, humans, imgcopy=False)
+                show, joints, bboxes, xcenter, sk = TfPoseEstimator.get_skeleton(show, humans, imgcopy=False)
                 height = show.shape[0]
                 width = show.shape[1]
                 if bboxes:
